@@ -41,20 +41,7 @@ stages {
       
      }
  }
- stage('Sonarqube') {
-    environment {
-        def scannerHome = tool 'sonarqube';
-    }
-    steps {
-      withSonarQubeEnv('sonarqube') {
-            sh "${scannerHome}/bin/sonar-scanner"
-        }
-        timeout(time: 10, unit: 'MINUTES') {
-          waitForQualityGate abortPipeline: true
-        }
-    }
-}
-     stage('Artifact upload') {
+    stage('Artifact upload') {
       steps {
        nexusPublisher nexusInstanceId: '1234', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'pipe/target/pipe.war']], mavenCoordinate: [artifactId: 'java-getting-started', groupId: 'com.example', packaging: 'war', version: '$BUILD_NUMBER']]]
       }
